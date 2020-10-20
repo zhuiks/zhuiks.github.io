@@ -15,7 +15,8 @@ const SPA: React.FC = () => {
       </Head>
 
         <main className={styles.main}>
-          <Section title="Evgen Kucherov" tag="Cool dude" details="a bounch of staff" />
+          <Section name="intro" title="Evgen Kucherov" tag="Cool dude" details="a bounch of staff" />
+          <Section name="code" title="Evgen Kucherov" tag="Cool dude" details="a bounch of staff" />
         </main>
 
         <footer className={styles.footer}>
