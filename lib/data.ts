@@ -8,6 +8,11 @@ interface DataProps {
   title: string
   tag: string
   details: string
+  colors?: {
+    title?: string
+    tag?: string
+    details?: string
+  }
 }
 
 export type Data = [string, DataProps][]
