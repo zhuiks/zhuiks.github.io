@@ -4,9 +4,16 @@ import matter from 'gray-matter'
 
 const fullPath = path.join(process.cwd(), 'data', 'data.yml')
 
-export function getData() {
+interface DataProps {
+  title: string
+  tag: string
+  details: string
+}
+
+export type Data = [string, DataProps][]
+export const getData = () => {
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = matter(fileContents)
 
-  return matterResult.data
+  return Object.entries(matterResult.data as DataProps[])
 }
