@@ -5,9 +5,10 @@ import matter from 'gray-matter'
 const fullPath = path.join(process.cwd(), 'data', 'data.yml')
 
 interface DataProps {
-  title: string
+  title?: string
   tag: string
-  details: string
+  details?: string
+  quote?: string
   colors?: {
     title?: string
     tag?: string

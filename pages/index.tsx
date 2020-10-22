@@ -27,7 +27,7 @@ const SPA: React.FC<{ data: Data }> = ({ data }) => {
 
       <main className={styles.main}>
         {data.map(([key, section], i) => (
-          <Section key={i} name={key} title={section.title} tag={section.tag} details={section.details} colors={section.colors}/>
+          <Section key={i} name={key} title={section.title} tag={section.tag} details={section.details} quote={section.quote} colors={section.colors}/>
         ))}
       </main>
 
