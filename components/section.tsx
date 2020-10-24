@@ -15,7 +15,7 @@ interface SectionProps {
 }
 
 const Section: React.FC<SectionProps> = ({ name, title, tag, details, quote, colors}) => (
-  <section className={styles.container}>
+  <section className={styles.container} data-anchor={name}>
     {title && <h2 className={styles.title} style={colors && colors.title ? {color: colors.title}: {}}>{title}</h2>}
     <summary className={styles.bg} style={{ backgroundImage: `url(/images/${name}.jpg)` }}>
       <h3 style={colors && colors.tag ? {color: colors.tag}: {}}>{tag}</h3>

@@ -1,5 +1,7 @@
 import React from 'react';
 import Head from 'next/head'
+import {default as Pageable} from '../lib/pageable'
+// import {default as Pageable} from 'pageable'
 import styles from '../styles/spa.module.scss'
 import Section from '../components/section';
 import { Data, getData } from '../lib/data';
@@ -17,6 +19,9 @@ export const getStaticProps: GetStaticProps = async () => {
 const SPA: React.FC<{ data: Data }> = ({ data }) => {
   const title = "Evgen Kucherov"
   const tagLine = "IT Consulting / Web Development"
+  React.useEffect(() => {
+    new Pageable('main')
+  }, [])
   return (
     <>
       <Head>
@@ -27,7 +32,7 @@ const SPA: React.FC<{ data: Data }> = ({ data }) => {
 
       <main className={styles.main}>
         {data.map(([key, section], i) => (
-          <Section key={i} name={key} title={section.title} tag={section.tag} details={section.details} quote={section.quote} colors={section.colors}/>
+          <Section key={i} name={key} title={section.title} tag={section.tag} details={section.details} quote={section.quote} colors={section.colors} />
         ))}
       </main>
 

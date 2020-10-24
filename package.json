@@ -11,6 +11,7 @@
     "dependencies": {
         "gray-matter": "^4.0.2",
         "next": "9.5.5",
+        "pageable": "^0.6.8",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "sass": "^1.27.0"
