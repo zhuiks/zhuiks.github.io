@@ -22,8 +22,8 @@ const Pageable: React.FC<PageableProps> = ({ children }) => {
     const { name, tag } = element.props
     links[name] = tag
   })
-  if(Math.abs(shift) > 30 && !(shift < 0 && index === 0 ) && !(index === Object.keys(links).length-1 && shift > 0)) {
-    setIndex(shift < 0 ? index -1 : index + 1)
+  if (Math.abs(shift) > 30 && !(shift < 0 && index === 0) && !(index === Object.keys(links).length - 1 && shift > 0)) {
+    setIndex(shift < 0 ? index - 1 : index + 1)
     setShift(0)
     justScrolled = true
     setTimeout(() => {
@@ -34,13 +34,13 @@ const Pageable: React.FC<PageableProps> = ({ children }) => {
   console.log(`--- Render: pixelShift=${pixelShift}`)
 
   const handleWheel = (event: WheelEvent<HTMLElement>) => {
-    if(justScrolled || event.deltaY < 0 && index === 0 && shift - DELTA < 0) return
+    if (justScrolled || event.deltaY < 0 && index === 0 && shift - DELTA < 0) return
     setShift(event.deltaY < 0 ? shift - DELTA : shift + DELTA)
   }
   return (
     <>
-      <main ref={mainRef} onWheel={handleWheel} style={{marginTop: -pixelShift}}>{children}</main>
-      <Pips links={links} active={index} />
+      <main ref={mainRef} onWheel={handleWheel} style={{ marginTop: -pixelShift }}>{children}</main>
+      <Pips links={links} active={index} onClick={(i) => setIndex(i)} />
       <style jsx>{`
         main {
           min-height: 100vh;

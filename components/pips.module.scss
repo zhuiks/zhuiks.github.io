@@ -32,6 +32,7 @@ $pip-active-size: 14px;
                     width: $pip-hover-size;
                     height: $pip-hover-size;
                     margin: -#{$pip-hover-size / 2} 0px 0px -#{$pip-hover-size / 2};
+                    box-shadow: 0px 0px 0px 5px #00000011;
                 }
             }
             a {
@@ -44,6 +45,7 @@ $pip-active-size: 14px;
                 background: $pip-color;
                 left: 50%;
                 top: 50%;
+                box-shadow: 0 0 3px 2px #00000033
             }
         }
     }
