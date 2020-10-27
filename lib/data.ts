@@ -16,10 +16,10 @@ interface DataProps {
   }
 }
 
-export type Data = [string, DataProps][]
+export type Data = DataProps[]
 export const getData = () => {
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = matter(fileContents)
 
-  return Object.entries(matterResult.data as DataProps[])
+  return matterResult.data as DataProps[]
 }
