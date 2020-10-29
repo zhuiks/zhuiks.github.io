@@ -24,7 +24,7 @@ $top-margin: 35vh;
     margin-top: $top-margin;
     padding-top: 7rem;
     margin-right: 50px;
-    transition: margin-top 0.3s ease-out;
+    transition: margin-top 0.3s ease-out, opacity 0.3s ease-in-out;
     h2 {
         margin: 0;
         font-family: 'Poiret One', cursive;
@@ -36,7 +36,16 @@ $top-margin: 35vh;
     }
 }
 
+.scroll {
+    margin-top: calc(var(--offset, 0) * 0.8 + 35vh);
+    opacity: calc(var(--abs-offset, 0) * (-0.3) + 1);
+}
+
 .prev {
+    opacity: 0;
+}
+
+.prev-scroll {
     margin-top: calc(var(--offset, 0) * 0.6 + 84vh);
 }
 

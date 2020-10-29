@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './section.module.scss'
 import clsx from 'clsx'
 
+export type ActiveClass = 'scroll' | 'prev-scroll' | 'prev' | 'next'
 interface SectionProps {
   name: string
   title?: string
@@ -13,7 +14,7 @@ interface SectionProps {
     tag?: string
     details?: string
   }
-  active?: 'prev' | 'next'
+  active?: ActiveClass
 }
 
 const Section: React.FC<SectionProps> = ({ name, title, tag, details, quote, colors, active}) => (
