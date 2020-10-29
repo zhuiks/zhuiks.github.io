@@ -1,5 +1,9 @@
+$left-margin: 40vw;
+$top-margin: 35vh;
 .container {
     overflow: hidden;
+    width: 100%;
+    height: 100vh;
 }
 
 .title {
@@ -8,26 +12,57 @@
     line-height: 1.15;
     font-size: 5.063rem;
     position: fixed;
-    left: 45%;
-    top: 35%;
+    left: $left-margin;
+    top: $top-margin;
     z-index: 10;
     color: #100700;
 }
 
-.bg {
+.summary {
     position: relative;
+    margin-left: $left-margin;
+    margin-top: $top-margin;
+    padding-top: 7rem;
+    margin-right: 50px;
+    transition: margin-top 0.3s ease-out;
+    h2 {
+        margin: 0;
+        font-family: 'Poiret One', cursive;
+        font-size: 3.375rem;
+        color: azure;
+    }
+    p {
+        margin: 1em 0 0;
+    }
+}
+
+.prev {
+    margin-top: calc(var(--offset, 0) * 0.6 + 84vh);
+}
+
+.next {
+    margin-top: calc(var(--offset, 0) * 0.6 - 14vh);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.bg {
+    position: absolute;
     width: 100%;
     height: 100vh;
     background-attachment: fixed;
     background-position: 0 100%;
     background-size: cover;
     background-repeat: no-repeat;
-    padding: 20% 0 0 45%;
-    h3 {
-        font-family: 'Poiret One', cursive;
-        font-size: 3.375rem;
-        color: azure;
-    }
 }
 
 .quote {

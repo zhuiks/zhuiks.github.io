@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './section.module.scss'
+import clsx from 'clsx'
 
 interface SectionProps {
   name: string
@@ -12,16 +13,18 @@ interface SectionProps {
     tag?: string
     details?: string
   }
+  active?: 'prev' | 'next'
 }
 
-const Section: React.FC<SectionProps> = ({ name, title, tag, details, quote, colors}) => (
-  <section className={styles.container} data-anchor={name}>
-    {title && <h2 className={styles.title} style={colors && colors.title ? {color: colors.title}: {}}>{title}</h2>}
-    <summary className={styles.bg} style={{ backgroundImage: `url(/images/${name}.jpg)` }}>
-      <h3 style={colors && colors.tag ? {color: colors.tag}: {}}>{tag}</h3>
+const Section: React.FC<SectionProps> = ({ name, title, tag, details, quote, colors, active}) => (
+  <section className={styles.container} id={name}>
+    <div className={styles.bg} style={{ backgroundImage: `url(/images/${name}.jpg)` }} />
+    {title && <h1 className={styles.title} style={colors && colors.title ? {color: colors.title}: {}}>{title}</h1>}
+    <div className={clsx(styles.summary, active && styles[active])} >
+      <h2 style={colors && colors.tag ? {color: colors.tag}: {}}>{tag}</h2>
       {details && <p style={colors && colors.details ? {color: colors.details}: {}}>{details}</p>}
-      {quote && <p className={styles.quote}>{quote}</p>}
-    </summary>
+      {quote && <blockquote className={styles.quote}>{quote}</blockquote>}
+    </div>
   </section>
 )
 

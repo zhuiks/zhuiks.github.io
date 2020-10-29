@@ -9,6 +9,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "clsx": "^1.1.1",
         "gray-matter": "^4.0.2",
         "next": "9.5.5",
         "pageable": "^0.6.8",
