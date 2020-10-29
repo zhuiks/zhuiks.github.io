@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './section.module.scss'
 import clsx from 'clsx'
 
-export type ActiveClass = 'scroll' | 'prev-scroll' | 'prev' | 'next'
+export type ActiveClass = 'scroll' | 'prev-scroll' | 'prev' | 'next' | 'active'
 interface SectionProps {
   name: string
   title?: string

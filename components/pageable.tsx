@@ -26,8 +26,8 @@ const Pageable: React.FC<PageableProps> = ({ children }) => {
     if(i === index + 1) {
       activeClass = 'next'
     }
-    if(i === index && shift > 0) {
-      activeClass = 'scroll'
+    if(i === index && shift >= 0) {
+      activeClass = shift === 0 ? 'active' : 'scroll'
     }
     if(activeClass) {
       ActiveChildren.push(React.cloneElement(element, { ...element.props, active: activeClass }))
