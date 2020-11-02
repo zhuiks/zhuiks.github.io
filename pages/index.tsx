@@ -1,22 +1,23 @@
 import React from 'react';
 import Head from 'next/head'
-import styles from '../styles/spa.module.scss'
 import Section from '../components/section';
-import { Data, getData } from '../lib/data';
+import { getData, Pages } from '../lib/data';
 import { GetStaticProps } from 'next';
 import Pageable from '../components/pageable'
-import Footer from '../components/footer';
+import Footer, { FooterProps } from '../components/footer';
 
 export const getStaticProps: GetStaticProps = async () => {
-  const data = getData()
+  const pageData = getData()
+  const footerData = getData('footer')
   return {
     props: {
-      data
+      pageData,
+      footerData,
     }
   }
 }
 
-const SPA: React.FC<{ data: Data }> = ({ data }) => {
+const SPA: React.FC<{ pageData: Pages, footerData?: FooterProps }> = ({ pageData, footerData }) => {
   const title = "Evgen Kucherov"
   const tagLine = "IT Consulting / Web Development"
   return (
@@ -28,11 +29,13 @@ const SPA: React.FC<{ data: Data }> = ({ data }) => {
       </Head>
 
       <Pageable>
-        {Object.entries(data).map(([id, section], i) => (
-          <Section key={i} name={id} title={section.title} tag={section.tag} details={section.details} quote={section.quote} colors={section.colors} />
+        {Object.entries(pageData).map(([id, section], i) => (
+          <Section key={i} name={id} {...section} />
         ))}
       </Pageable>
-      <Footer />
+      {footerData &&
+        <Footer {...footerData} />
+      }
     </>
   )
 }

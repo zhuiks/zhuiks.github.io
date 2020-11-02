@@ -1,18 +1,20 @@
 import React from 'react'
-import styles from './footer.module.scss'
-interface FooterProps {
-
+import styles from '../styles/footer.module.scss'
+export interface FooterProps {
+  header: string
+  links?: {[icon: string]: string }
 }
 
-const Footer: React.FC<FooterProps> = () => (
+const Footer: React.FC<FooterProps> = ({header, links}) => (
   <footer className={styles.footer}>
-    <h3>Want to talk about a project?</h3>
+    <h3>{header}</h3>
+    {links &&
     <div className={styles.icons}>
-      <a href="#" className={styles.linkedin}><span /></a>
-      <a href="#" className={styles.github}><span /></a>
-      <a href="#" className={styles.facebook}><span /></a>
-      <a href="#" className={styles.email}><span /></a>
+      {Object.entries(links).map(([icon, link]) => (
+        <a href={link} className={styles[icon]} target="_blank" rel="noopener noreferrer"><span /></a>
+      ))}
     </div>
+    }
   </footer>  
 )
 

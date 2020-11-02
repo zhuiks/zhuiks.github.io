@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './pips.module.scss'
+import styles from '../styles/pips.module.scss'
 
 interface PipItemProps {
   id: string

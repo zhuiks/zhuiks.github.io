@@ -1,25 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import { PageData } from '../components/section'
+import { FooterProps } from '../components/footer'
 
-const fullPath = path.join(process.cwd(), 'data', 'data.yml')
+const dataDir = path.join(process.cwd(), 'data')
 
-interface DataProps {
-  title?: string
-  tag: string
-  details?: string
-  quote?: string
-  colors?: {
-    title?: string
-    tag?: string
-    details?: string
-  }
-}
+export type Pages = { [id: string]: PageData }
+export type Data = Pages | FooterProps
 
-export type Data = DataProps[]
-export const getData = () => {
+export const getData = (file: 'pages' | 'footer' = 'pages') => {
+  const fullPath = path.join(dataDir, `${file}.yml`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = matter(fileContents)
-
-  return matterResult.data as DataProps[]
+  if (file === 'footer') {
+    return matterResult.data as FooterProps
+  } else {
+    return matterResult.data as Pages
+  }
 }

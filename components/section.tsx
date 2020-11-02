@@ -1,10 +1,9 @@
 import React from 'react'
-import styles from './section.module.scss'
+import styles from '../styles/section.module.scss'
 import clsx from 'clsx'
 
 export type ActiveClass = 'scroll' | 'prev-scroll' | 'prev' | 'next' | 'active'
-interface SectionProps {
-  name: string
+export interface PageData {
   title?: string
   tag: string
   details?: string
@@ -14,6 +13,9 @@ interface SectionProps {
     tag?: string
     details?: string
   }
+}
+interface SectionProps extends PageData {
+  name: string
   active?: ActiveClass
 }
 
