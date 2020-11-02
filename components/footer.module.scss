@@ -1,0 +1,51 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(-15deg, #100700, #512300);
+    color: #ffe6d0;
+    height: 25vh;
+    padding: 3rem 10rem 2rem 4rem;
+    h3 {
+        font-family: 'Poiret One', cursive;
+        font-size: 2.25rem;
+        margin: 0;
+    }
+    .icons {
+        display: flex;
+        a {
+            display: block;
+            width: 56px;
+            height: 56px;
+            margin-left: 1.5rem;
+            animation: fadeInDown 0.5s ease-in-out 1s;
+        }
+    }
+}
+
+// https://github.com/animate-css/animate.css/blob/main/source/fading_entrances/fadeInDown.css
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.linkedin {
+    background-image: url('/images/linkedin.png');
+}
+
+.github {
+    background-image: url('/images/github.png');
+}
+
+.facebook {
+    background-image: url('/images/facebook.png');
+}
+
+.email {
+    background-image: url('/images/email.png');
+}

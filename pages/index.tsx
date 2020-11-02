@@ -1,12 +1,11 @@
 import React from 'react';
 import Head from 'next/head'
-// import {default as Pageable} from '../lib/pageable'
-// import {default as Pageable} from 'pageable'
 import styles from '../styles/spa.module.scss'
 import Section from '../components/section';
 import { Data, getData } from '../lib/data';
 import { GetStaticProps } from 'next';
 import Pageable from '../components/pageable'
+import Footer from '../components/footer';
 
 export const getStaticProps: GetStaticProps = async () => {
   const data = getData()
@@ -33,15 +32,7 @@ const SPA: React.FC<{ data: Data }> = ({ data }) => {
           <Section key={i} name={id} title={section.title} tag={section.tag} details={section.details} quote={section.quote} colors={section.colors} />
         ))}
       </Pageable>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-        </a>
-      </footer>
+      <Footer />
     </>
   )
 }
