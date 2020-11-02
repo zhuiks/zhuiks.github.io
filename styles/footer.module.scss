@@ -1,10 +1,11 @@
+$top-margin: 4rem;
 .footer {
     display: flex;
     justify-content: space-between;
     background: linear-gradient(-15deg, #100700, #512300);
     color: #ffe6d0;
     height: 25vh;
-    padding: 3rem 10rem 2rem 4rem;
+    padding: $top-margin 12vw 2rem 7vw;
     h3 {
         font-family: 'Poiret One', cursive;
         font-size: 2.25rem;
@@ -17,20 +18,15 @@
             width: 56px;
             height: 56px;
             margin-left: 1.5rem;
-            animation: fadeInDown 0.5s ease-in-out 1s;
+            transform: scale(0.85);
+            opacity: 0;
+            margin-top: -$top-margin;
+            transition-property: opacity, margin-top;
+            transition-duration: 0.5s;
+            &:hover {
+                transform: scale(1);
+            }
         }
-    }
-}
-
-// https://github.com/animate-css/animate.css/blob/main/source/fading_entrances/fadeInDown.css
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translate3d(0, -100%, 0);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
     }
 }
 
@@ -48,4 +44,16 @@
 
 .email {
     background-image: url('/images/email.png');
+}
+
+.active {
+    @for $i from 1 through 9 {
+        .icons a {
+            opacity: 1;
+            margin-top: 0;
+        }
+        .icons a:nth-child(#{$i}) {
+            transition-delay: (0.3s+$i*0.5s);
+        }
+    }
 }

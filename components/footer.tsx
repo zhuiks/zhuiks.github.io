@@ -1,12 +1,16 @@
+import clsx from 'clsx'
 import React from 'react'
 import styles from '../styles/footer.module.scss'
-export interface FooterProps {
+export interface FooterData {
   header: string
   links?: {[icon: string]: string }
 }
 
-const Footer: React.FC<FooterProps> = ({header, links}) => (
-  <footer className={styles.footer}>
+interface FooterProps extends FooterData{
+  active?: boolean
+}
+const Footer: React.FC<FooterProps> = ({header, links, active}) => (
+  <footer className={clsx(styles.footer, active && styles.active)}>
     <h3>{header}</h3>
     {links &&
     <div className={styles.icons}>

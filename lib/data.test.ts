@@ -1,4 +1,4 @@
-import { FooterProps } from '../components/footer'
+import { FooterData } from '../components/footer'
 import { getData, Pages } from './data'
 
 describe('Data Fetching', ()=> {
@@ -10,7 +10,7 @@ describe('Data Fetching', ()=> {
     expect(data).toHaveProperty('code')
   })
   it('gets footer data', ()=> {
-    const data = getData('footer') as FooterProps
+    const data = getData('footer') as FooterData
     expect(data).toHaveProperty('header')
   })
 })
