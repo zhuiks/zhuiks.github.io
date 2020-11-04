@@ -1,28 +1,42 @@
-$top-margin: 4rem;
 .footer {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: strech;
     background: linear-gradient(-15deg, #100700, #512300);
     color: #ffe6d0;
     height: 25vh;
-    padding: $top-margin 12vw 2rem 7vw;
+    padding: 6vh 8vw 2rem 7vw;
+    --icon-size: 40px;
+    @media (min-width: 567px) {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    @media (max-height: 360) {
+        padding-top: 2.5rem;
+    }
+    @media (min-width: 1024px) {
+        --icon-size: 56px;
+        padding-right: 12vw;
+    }
     h3 {
         font-family: 'Poiret One', cursive;
         font-size: 2.25rem;
-        margin: 0;
+        margin: 0 1em 1em 0;
     }
     .icons {
         display: flex;
+        justify-content: flex-end;
         a {
             display: block;
-            width: 56px;
-            height: 56px;
+            width: var(--icon-size);
+            height: var(--icon-size);
             margin-left: 1.5rem;
             transform: scale(0.85);
             opacity: 0;
-            margin-top: -$top-margin;
+            margin-top: -4rem;
             transition-property: opacity, margin-top;
             transition-duration: 0.5s;
+            background-size: contain;
             &:hover {
                 transform: scale(1);
             }
@@ -47,7 +61,7 @@ $top-margin: 4rem;
 }
 
 .active {
-    @for $i from 1 through 9 {
+    @for $i from 1 through 4 {
         .icons a {
             opacity: 1;
             margin-top: 0;

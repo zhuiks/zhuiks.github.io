@@ -7,7 +7,7 @@ body {
     overflow: hidden;
     font-family: 'Roboto', sans-serif;
     font-size: 50%;
-    @media (min-width: 768px) {
+    @media (min-width: 920px), (min-width: 768px) and (orientation: portrait) {
         font-size: 80%;
     }
     @media (min-width: 1080px),
