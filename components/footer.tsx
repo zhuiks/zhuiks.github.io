@@ -14,8 +14,8 @@ const Footer: React.FC<FooterProps> = ({header, links, active}) => (
     <h3>{header}</h3>
     {links &&
     <div className={styles.icons}>
-      {Object.entries(links).map(([icon, link]) => (
-        <a href={link} className={styles[icon]} target="_blank" rel="noopener noreferrer"><span /></a>
+      {Object.entries(links).map(([icon, link], i) => (
+        <a key={i} href={link} className={styles[icon]} target="_blank" rel="noopener noreferrer"><span /></a>
       ))}
     </div>
     }

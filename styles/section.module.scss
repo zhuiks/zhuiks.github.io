@@ -1,5 +1,3 @@
-$left-margin: 40vw;
-$top-margin: 35vh;
 .container {
     overflow: hidden;
     width: 100%;
@@ -12,19 +10,23 @@ $top-margin: 35vh;
     line-height: 1.15;
     font-size: 5.063rem;
     position: fixed;
-    left: $left-margin;
-    top: $top-margin;
+    left: var(--left-margin);
+    top: calc(5 * var(--top-margin));
     z-index: 10;
     color: #100700;
 }
 
 .summary {
     position: relative;
-    margin-left: $left-margin;
-    margin-top: $top-margin;
+    margin-left: var(--left-margin);
+    margin-top: calc(5 * var(--top-margin));
     padding-top: 7rem;
-    margin-right: 50px;
-    transition: margin-top 0.3s ease-out, opacity 0.3s ease-in-out;
+    margin-right: 20px;
+    @media (min-width: 375px) {
+        margin-right: 40px;
+    }
+    transition: margin-top 0.3s ease-out,
+    opacity 0.3s ease-in-out;
     h2 {
         margin: 0;
         font-family: 'Poiret One', cursive;
@@ -37,7 +39,7 @@ $top-margin: 35vh;
 }
 
 .scroll {
-    margin-top: calc(var(--offset, 0) * 0.8 + 35vh);
+    margin-top: calc(var(--offset, 0) * 0.8 + 5 * var(--top-margin));
     opacity: calc(var(--abs-offset, 0) * (-0.3) + 1);
 }
 
@@ -46,11 +48,11 @@ $top-margin: 35vh;
 }
 
 .prev-scroll {
-    margin-top: calc(var(--offset, 0) * 0.6 + 84vh);
+    margin-top: calc(var(--offset, 0) * 0.6 + 92vh - (var(--top-margin) * 0.2));
 }
 
 .next {
-    margin-top: calc(var(--offset, 0) * 0.6 - 14vh);
+    margin-top: calc(var(--offset, 0) * 0.6 - 6vh - (var(--top-margin) * 0.2)); // -14vh
 }
 
 .active {

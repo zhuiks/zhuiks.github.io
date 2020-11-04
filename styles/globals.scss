@@ -6,7 +6,29 @@ body {
     height: 100%;
     overflow: hidden;
     font-family: 'Roboto', sans-serif;
-    font-size: 100%;
+    font-size: 50%;
+    @media (min-width: 768px) {
+        font-size: 80%;
+    }
+    @media (min-width: 1080px),
+    (min-width: 1024px) and (orientation: portrait) {
+        font-size: 100%;
+    }
+    @media (max-width: 375px) and (orientation: portrait) {
+        font-size: 45%;
+    }
+}
+
+ :root {
+    --left-margin: 12vw;
+    --top-margin: 3.6vh;
+    @media (orientation: landscape) {
+        --left-margin: 40vw;
+        --top-margin: 7vh;
+    }
+    @media (max-width: 375px) and (orientation: portrait) {
+        --left-margin: 7vw;
+    }
 }
 
 a {
