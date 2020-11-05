@@ -5,11 +5,9 @@ import Footer, { FooterData } from './footer'
 import Pips from './pips'
 import { ActiveClass } from './section'
 
-const DELTA = 7
 interface PageableProps {
   footerData?: FooterData
 }
-let justScrolled = false
 
 const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
   const { height } = useWindowSize()
@@ -47,15 +45,16 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
     '--scroll': `${-(scroll.index + scroll.offset / 100) * height}px`,
     '--abs-offset': scroll.absOffset
   }
-  // console.log(`--- Render: offset=${scroll.offset}px`)
-
-  const handleWheel = (event: WheelEvent<HTMLElement>) => {
-    scroll.byStep(event.deltaY)
-  }
 
   return (
     <>
-      <main onWheel={handleWheel} style={style}>{ActiveChildren}</main>
+      <main
+        onWheel={(event: React.WheelEvent<HTMLElement>) => scroll.byStep(event.deltaY) }
+        onMouseDown={(event: React.MouseEvent<HTMLElement>) => {}}
+        style={style}
+      >
+        {ActiveChildren}
+      </main>
       <Pips links={links} active={scroll.index} onClick={scroll.toIndex} />
       <style jsx>{`
         main {
