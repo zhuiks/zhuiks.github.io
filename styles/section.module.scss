@@ -49,11 +49,11 @@
 }
 
 .prev-scroll {
-    margin-top: calc(var(--offset, 0) * 0.6 + 92vh - (var(--top-margin) * 0.2));
+    margin-top: calc(var(--offset, 0) * 0.6 + 92vh - var(--top-margin));
 }
 
 .next {
-    margin-top: calc(var(--offset, 0) * 0.6 - 6vh - (var(--top-margin) * 0.2)); // -14vh
+    margin-top: calc(var(--offset, 0) * 0.6 - 6vh - var(--top-margin)); // -14vh
 }
 
 .active {
