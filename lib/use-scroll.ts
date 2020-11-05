@@ -20,11 +20,17 @@ const useScroll = (totalSections: number) => {
     }, 1000)
   }
 
-  const byStep = (eventDelta: number) => {
+  const scrollByValue = (relativeDelta: number) => {
     if (justScrolled) return
-    if (isFirstSection && eventDelta < 0 && offset - DELTA_STEP < 0) return
-    if (isLastSection && eventDelta > 0 && offset / DELTA_STEP > 2) return
-    setOffset(eventDelta < 0 ? offset - DELTA_STEP : offset + DELTA_STEP)
+    if (isFirstSection && relativeDelta < 0 && offset - relativeDelta < 0) return
+    if (isLastSection && relativeDelta > 0 && offset / DELTA_STEP > 2) return
+    setOffset(offset + relativeDelta)
+  }
+  const scrollByStep = (eventDelta: number) => scrollByValue(eventDelta < 0 ? - DELTA_STEP : DELTA_STEP)
+
+  const scrollToIndex = (i: number) => {
+    setOffset(0)
+    setIndex(i)
   }
 
   return {
@@ -33,8 +39,9 @@ const useScroll = (totalSections: number) => {
     absOffset: offset / DELTA_STEP,
     isFirstSection,
     isLastSection,
-    byStep,
-    toIndex: (i: number) => setIndex(i)
+    byValue: scrollByValue,
+    byStep: scrollByStep,
+    toIndex: scrollToIndex
   }
 }
 

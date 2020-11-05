@@ -5,12 +5,15 @@ import Footer, { FooterData } from './footer'
 import Pips from './pips'
 import { ActiveClass } from './section'
 
+const DRAG_THRESHOLD = 50 //px
+
 interface PageableProps {
   footerData?: FooterData
 }
 
 const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
   const { height } = useWindowSize()
+  const [mouseY, setMouseY] = useState<number>()
   const scroll = useScroll(React.Children.count(children))
 
   let ActiveChildren: ReactNode[] = []
@@ -38,19 +41,36 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
     links[name] = tag
   })
 
+  const pixelOffset = scroll.offset * height / 100
+
+  const handleDrag = (event: React.MouseEvent<HTMLElement>) => {
+    if (!mouseY) return
+    const deltaY = mouseY - event.clientY
+    setMouseY(event.clientY)
+    scroll.byValue(100 * deltaY / height)
+  }
+  const endDrag = (event: React.MouseEvent<HTMLElement>) => {
+    setMouseY(undefined)
+    const updatedIndex = Math.abs(pixelOffset) > DRAG_THRESHOLD ? scroll.index + Math.sign(pixelOffset) : scroll.index
+    scroll.toIndex(updatedIndex)
+  }
 
   const style: CSSProperties = {
     // @ts-ignore
     '--offset': `${scroll.offset}vh`,
-    '--scroll': `${-(scroll.index + scroll.offset / 100) * height}px`,
+    '--scroll': `${-(scroll.index * height + pixelOffset) }px`,
     '--abs-offset': scroll.absOffset
   }
 
   return (
     <>
       <main
-        onWheel={(event: React.WheelEvent<HTMLElement>) => scroll.byStep(event.deltaY) }
-        onMouseDown={(event: React.MouseEvent<HTMLElement>) => {}}
+        onWheel={(event: React.WheelEvent<HTMLElement>) => scroll.byStep(event.deltaY)}
+        onMouseDown={(event: React.MouseEvent<HTMLElement>) =>
+          (mouseY === undefined || event.button !== 0 ? setMouseY(event.clientY) : false)
+        }
+        onMouseMove={handleDrag}
+        onMouseUp={endDrag}
         style={style}
       >
         {ActiveChildren}
