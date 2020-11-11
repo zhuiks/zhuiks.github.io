@@ -13,7 +13,7 @@ interface PageableProps {
 
 const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
   const { height } = useWindowSize()
-  const [mouseY, setMouseY] = useState<number>()
+  const [dragY, setDragY] = useState<number>()
   const scroll = useScroll(React.Children.count(children))
 
   let ActiveChildren: ReactNode[] = []
@@ -43,14 +43,34 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
 
   const pixelOffset = scroll.offset * height / 100
 
-  const handleDrag = (event: React.MouseEvent<HTMLElement>) => {
-    if (!mouseY) return
-    const deltaY = mouseY - event.clientY
-    setMouseY(event.clientY)
+  type MouseEvent = React.MouseEvent<HTMLElement> 
+  type TouchEvent = React.TouchEvent<HTMLElement>
+
+  type DragEvent = MouseEvent | TouchEvent
+
+  
+  function isTouch(e: DragEvent): e is TouchEvent {
+    return (e as React.TouchEvent<HTMLElement>).touches !== undefined
+  }
+  
+  const getClientY = (event: DragEvent) => (
+    isTouch(event) ? event.touches[0].clientY : event.clientY
+  )
+
+  const startDrag = (event: DragEvent) => {
+    if(dragY !== undefined) return
+    if(!isTouch(event) && event.button !== 0) return
+    setDragY(getClientY(event))
+  }
+
+  const handleDrag = (event: DragEvent) => {
+    if (!dragY) return
+    const deltaY = dragY - getClientY(event)
+    setDragY(getClientY(event))
     scroll.byValue(100 * deltaY / height)
   }
-  const endDrag = (event: React.MouseEvent<HTMLElement>) => {
-    setMouseY(undefined)
+  const endDrag = (event: DragEvent) => {
+    setDragY(undefined)
     const updatedIndex = Math.abs(pixelOffset) > DRAG_THRESHOLD ? scroll.index + Math.sign(pixelOffset) : scroll.index
     scroll.toIndex(updatedIndex)
   }
@@ -66,11 +86,12 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
     <>
       <main
         onWheel={(event: React.WheelEvent<HTMLElement>) => scroll.byStep(event.deltaY)}
-        onMouseDown={(event: React.MouseEvent<HTMLElement>) =>
-          (mouseY === undefined || event.button !== 0 ? setMouseY(event.clientY) : false)
-        }
+        onMouseDown={startDrag}
         onMouseMove={handleDrag}
         onMouseUp={endDrag}
+        onTouchStart={startDrag}
+        onTouchMove={handleDrag}
+        onDragEnd={endDrag}
         style={style}
       >
         {ActiveChildren}
