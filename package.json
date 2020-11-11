@@ -12,16 +12,15 @@
     "dependencies": {
         "clsx": "^1.1.1",
         "gray-matter": "^4.0.2",
-        "next": "9.5.5",
-        "pageable": "^0.6.8",
-        "react": "16.14.0",
-        "react-dom": "16.14.0",
-        "sass": "^1.27.0"
+        "next": "^10.0.1",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "sass": "^1.29.0"
     },
     "devDependencies": {
         "@types/jest": "^26.0.15",
         "@types/node": "^14.11.8",
-        "@types/react": "^16.9.52",
+        "@types/react": "^16.9.56",
         "jest": "^26.6.0",
         "ts-jest": "^26.4.1",
         "typescript": "^4.0.3"
