@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "test": "jest"
+        "test": "jest",
+        "deploy": "next build && next export && git add out/ && git commit -m \"Deploy gh-pages\" && git subtree push --prefix out origin gh-pages"
     },
     "dependencies": {
         "clsx": "^1.1.1",
