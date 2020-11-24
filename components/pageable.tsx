@@ -1,11 +1,9 @@
-import React, { CSSProperties, ReactNode, ReactNodeArray, useState, WheelEvent } from 'react'
+import React, { CSSProperties, ReactNode, ReactNodeArray, useEffect, useState, WheelEvent } from 'react'
 import useScroll from '../lib/use-scroll'
 import useWindowSize from '../lib/use-window-size'
 import Footer, { FooterData } from './footer'
 import Pips from './pips'
 import { ActiveClass } from './section'
-
-const DRAG_THRESHOLD = 50 //px
 
 interface PageableProps {
   footerData?: FooterData
@@ -13,8 +11,14 @@ interface PageableProps {
 
 const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
   const { height } = useWindowSize()
-  const [dragY, setDragY] = useState<number>()
-  const scroll = useScroll(React.Children.count(children))
+  const s = useScroll({
+    totalPages: React.Children.count(children),
+    pageSize: 0
+  })
+
+  useEffect(() => {
+    s.resize(height)
+  }, [height])
 
   let ActiveChildren: ReactNode[] = []
   let links: { [id: string]: string } = {}
@@ -22,14 +26,14 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
     if (!React.isValidElement(element)) return
 
     let activeClass: ActiveClass | undefined
-    if (i === scroll.index - 1) {
-      activeClass = scroll.absOffset < 0 ? 'prev-scroll' : 'prev'
+    if (i === s.index - 1) {
+      activeClass = s.absOffset < 0 ? 'prev-scroll' : 'prev'
     }
-    if (i === scroll.index + 1) {
+    if (i === s.index + 1) {
       activeClass = 'next'
     }
-    if (i === scroll.index && scroll.absOffset >= 0) {
-      activeClass = scroll.absOffset === 0 ? 'active' : 'scroll'
+    if (i === s.index && s.absOffset >= 0) {
+      activeClass = s.absOffset === 0 ? 'active' : 'scroll'
     }
     if (activeClass) {
       ActiveChildren.push(React.cloneElement(element, { ...element.props, active: activeClass }))
@@ -41,67 +45,30 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
     links[name] = tag
   })
 
-  const pixelOffset = scroll.offset * height / 100
-
-  type MouseEvent = React.MouseEvent<HTMLElement>
-  type TouchEvent = React.TouchEvent<HTMLElement>
-
-  type DragEvent = MouseEvent | TouchEvent
-
-
-  function isTouch(e: DragEvent): e is TouchEvent {
-    return (e as React.TouchEvent<HTMLElement>).touches !== undefined
-  }
-
-  const getClientY = (event: DragEvent) => {
-    console.log(isTouch(event) ? `touchY: ${event.touches[0].clientY}` : `mouseY: ${event.clientY}`)
-    return (
-      isTouch(event) ? event.touches[0].clientY : event.clientY
-    )
-  }
-
-  const startDrag = (event: DragEvent) => {
-    if (dragY !== undefined) return
-    if (!isTouch(event) && event.button !== 0) return
-    event.preventDefault()
-    event.stopPropagation()
-    setDragY(getClientY(event))
-  }
-
-  const handleDrag = (event: DragEvent) => {
-    if (!dragY) return
-    const deltaY = dragY - getClientY(event)
-    setDragY(getClientY(event))
-    scroll.scrollByAmount(100 * deltaY / height)
-  }
-  const endDrag = (event: DragEvent) => {
-    setDragY(undefined)
-    const updatedIndex = Math.abs(pixelOffset) > DRAG_THRESHOLD ? scroll.index + Math.sign(pixelOffset) : scroll.index
-    scroll.scrollToIndex(updatedIndex)
-  }
+  const pixelOffset = s.offset * height / 100
 
   const style: CSSProperties = {
     // @ts-ignore
-    '--offset': `${scroll.offset}vh`,
-    '--scroll': `${-(scroll.index * height + pixelOffset)}px`,
-    '--abs-offset': scroll.absOffset
+    '--offset': `${s.offset}vh`,
+    '--scroll': `${-(s.index * height + pixelOffset)}px`,
+    '--abs-offset': s.absOffset
   }
 
   return (
     <>
       <main
-        onWheel={(event: React.WheelEvent<HTMLElement>) => scroll.scrollByStep(event.deltaY)}
-        onMouseDown={startDrag}
-        onMouseMove={handleDrag}
-        onMouseUp={endDrag}
-        onTouchStart={startDrag}
-        onTouchMove={handleDrag}
-        onDragEnd={endDrag}
+        onWheel={(event: React.WheelEvent<HTMLElement>) => s.scrollByStep(event.deltaY)}
+        onMouseDown={s.startDrag}
+        onMouseMove={s.drag}
+        onMouseUp={s.endDrag}
+        onTouchStart={s.startDrag}
+        onTouchMove={s.drag}
+        onTouchEnd={s.endDrag}
         style={style}
       >
         {ActiveChildren}
       </main>
-      <Pips links={links} active={scroll.index} onClick={scroll.scrollToIndex} />
+      <Pips links={links} active={s.index} onClick={s.scrollToIndex} />
       <style jsx>{`
         main {
           min-height: 100vh;
@@ -111,7 +78,7 @@ const Pageable: React.FC<PageableProps> = ({ children, footerData }) => {
         }
     `}</style>
       { footerData &&
-        <Footer active={scroll.activeEnd} {...footerData} />
+        <Footer active={s.activeEnd} {...footerData} />
       }
     </>
   )

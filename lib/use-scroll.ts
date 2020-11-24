@@ -1,13 +1,14 @@
-import { useState, useReducer, useDebugValue, useEffect } from 'react'
-import useWindowSize from './use-window-size'
+import React, { useReducer, useEffect } from 'react'
 
 const DELTA_STEP = 7
 const TRESHHOLD = 3 * DELTA_STEP
-let justScrolled = false
+const DRAG_THRESHOLD = 3 * DELTA_STEP
 
-interface NextAction {
-  type: 'NEXT'
-}
+type MouseEvent = React.MouseEvent<HTMLElement>
+type TouchEvent = React.TouchEvent<HTMLElement>
+
+type DragEvent = MouseEvent | TouchEvent
+
 interface UnfreezeAction {
   type: 'UNFREEZE'
 }
@@ -19,26 +20,90 @@ interface ByAmountAction {
   type: 'BY_AMOUNT'
   payload: number
 }
-type TheAction = NextAction | UnfreezeAction | ToIndexAction | ByAmountAction
+interface DragStartAction {
+  type: 'DRAG_START'
+  payload: DragEvent
+}
+interface DragAction {
+  type: 'DRAG'
+  payload: DragEvent
+}
+interface DragEndAction {
+  type: 'DRAG_END'
+}
+interface ResizeAction {
+  type: 'RESIZE',
+  payload: number
+}
+type TheAction = UnfreezeAction | ToIndexAction | ByAmountAction | DragStartAction | DragAction | DragEndAction | ResizeAction
 
-interface ScrollState {
+interface InitState {
+  totalPages: number,
+  pageSize: number
+}
+interface ScrollState extends InitState {
   index: number
   offset: number
   dragY: number
-  totalPages: number
   pageScrolled: boolean
 }
-
-const initState = (totalPages: number): ScrollState => ({
+const initState = (init: InitState): ScrollState => ({
+  ...init,
   index: 0,
   offset: 0,
   dragY: -1,
-  totalPages,
   pageScrolled: false,
 })
 
 const isFirstPage = (state: ScrollState) => state.index === 0
 const isLastPage = (state: ScrollState) => state.index === state.totalPages - 1
+
+
+function isTouch(e: DragEvent): e is TouchEvent {
+  return (e as React.TouchEvent<HTMLElement>).touches !== undefined
+}
+
+const getClient = (event: DragEvent) => {
+  console.log(isTouch(event) ? `touchY: ${event.touches[0].clientY}` : `mouseY: ${event.clientY}`)
+  return (
+    isTouch(event) ? event.touches[0] : event
+  )
+}
+
+const preventDefault = (event: DragEvent) => {
+  event.preventDefault()
+  event.stopPropagation()
+}
+
+const scrollBy = (state: ScrollState, amount: number): ScrollState => {
+  const newOffset = state.offset + amount
+  if (isFirstPage(state) && amount < 0 && newOffset < 0) return state
+  if (isLastPage(state) && amount > 0 && newOffset > TRESHHOLD) return state
+  if (Math.abs(newOffset) > TRESHHOLD) {
+    return {
+      ...state,
+      index: state.index + Math.sign(newOffset),
+      offset: 0,
+      pageScrolled: true,
+    }
+  }
+  return {
+    ...state,
+    offset: newOffset
+  }
+}
+const dragging = (state: ScrollState, clientY: number): ScrollState => {
+  const amount = (state.dragY - clientY) * 100 / state.pageSize
+  const newOffset = state.offset + amount
+  if (isFirstPage(state) && amount < 0 && newOffset < 0) return state
+  if (isLastPage(state) && amount > 0 && newOffset > TRESHHOLD) return state
+  return {
+    ...state,
+    dragY: clientY,
+    offset: newOffset,
+  }
+
+}
 
 const reducer = (state: ScrollState, action: TheAction) => {
   if (state.pageScrolled) {
@@ -46,29 +111,39 @@ const reducer = (state: ScrollState, action: TheAction) => {
   }
   switch (action.type) {
     case 'BY_AMOUNT':
-      const relativeDelta = action.payload
-      const newOffset = state.offset + action.payload
-      console.log(`relDelta=${relativeDelta}, offset=${newOffset}`)
-      if (isFirstPage(state) && relativeDelta < 0 && newOffset < 0) return state
-      if (isLastPage(state) && relativeDelta > 0 && newOffset > TRESHHOLD) return state
-      if (Math.abs(newOffset) > TRESHHOLD) {
-        return {
-          ...state,
-          index: newOffset < 0 ? state.index - 1 : state.index + 1,
-          offset: 0,
-          pageScrolled: true,
-        }
-      }
-      return {
-        ...state,
-        offset: newOffset
-      }
+      return scrollBy(state, action.payload)
     case 'TO_INDEX':
       return {
         ...state,
         index: action.payload,
         offset: 0,
         pageScrolled: true,
+      }
+    case 'DRAG_START':
+      if (state.dragY !== -1) return state
+      preventDefault(action.payload)
+      return {
+        ...state,
+        dragY: getClient(action.payload).clientY
+      }
+    case 'DRAG':
+      if (state.dragY <= 0) return state
+      preventDefault(action.payload)
+      return dragging(state, getClient(action.payload).clientY)
+    case 'DRAG_END':
+      return {
+        ...state,
+        dragY: -1,
+        index: Math.abs(state.offset) > DRAG_THRESHOLD && !((isFirstPage(state) && state.offset<0) ||  (isLastPage(state) && state.offset > 0)) ? state.index + Math.sign(state.offset) : state.index,
+        offset: isLastPage(state) && state.offset > 0 ? state.offset : 0,
+        pageScrolled: true
+      }
+    case 'RESIZE':
+      return {
+        ...state,
+        pageSize: action.payload,
+        offset: 0,
+        dragY: -1,
       }
     default:
       return state
@@ -77,12 +152,8 @@ const reducer = (state: ScrollState, action: TheAction) => {
 
 
 
-const useScroll = (totalSections: number) => {
-  // const [index, setIndex] = useState(0)
-  // const [offset, setOffset] = useState(0)
-  // const [dragY, setDragY] = useState<number>()
-
-  const [state, dispatch] = useReducer(reducer, totalSections, initState)
+const useScroll = (initParams: InitState) => {
+  const [state, dispatch] = useReducer(reducer, initParams, initState)
   useEffect(() => {
     if (state.pageScrolled) {
       setTimeout(() => {
@@ -90,40 +161,19 @@ const useScroll = (totalSections: number) => {
       }, 1000)
     }
   }, [state.pageScrolled])
-  // const isFirstSection = index === 0
-  // const isLastSection = index === totalSections - 1
-
-  // if (Math.abs(offset) > 3 * DELTA_STEP && !(isFirstSection && offset < 0) && !(isLastSection && offset > 0)) {
-  //   setIndex(offset < 0 ? index - 1 : index + 1)
-  //   setOffset(0)
-  //   justScrolled = true
-  //   setTimeout(() => {
-  //     justScrolled = false
-  //   }, 1000)
-  // }
-
-  // const scrollByValue = (relativeDelta: number) => {
-  //   if (justScrolled) return
-  //   if (isFirstSection && relativeDelta < 0 && offset - relativeDelta < 0) return
-  //   if (isLastSection && relativeDelta > 0 && offset / DELTA_STEP > 2) return
-  //   setOffset(offset + relativeDelta)
-  // }
-  // const scrollByStep = (eventDelta: number) => scrollByValue(eventDelta < 0 ? - DELTA_STEP : DELTA_STEP)
-
-  // const scrollToIndex = (i: number) => {
-  //   setOffset(0)
-  //   setIndex(i)
-  // }
 
   return {
     index: state.index,
     offset: state.offset,
     absOffset: state.offset / DELTA_STEP,
-    // isFirstSection,
     activeEnd: isLastPage(state) && state.offset / DELTA_STEP > 1,
     scrollByAmount: (val: number) => dispatch({ type: 'BY_AMOUNT', payload: val }),
     scrollByStep: (dir: number) => dispatch({ type: 'BY_AMOUNT', payload: dir < 0 ? - DELTA_STEP : DELTA_STEP }),
     scrollToIndex: (index: number) => dispatch({ type: 'TO_INDEX', payload: index }),
+    startDrag: (event: DragEvent) => dispatch({ type: 'DRAG_START', payload: event }),
+    drag: (event: DragEvent) => dispatch({ type: 'DRAG', payload: event }),
+    endDrag: () => dispatch({ type: 'DRAG_END' }),
+    resize: (h: number) => dispatch({ type: 'RESIZE', payload: h })
   }
 }
 
